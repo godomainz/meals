@@ -11,13 +11,9 @@ class MealsScreen extends StatelessWidget {
   const MealsScreen({super.key, required this.title, required this.meals});
 
   void selectMeal(BuildContext context, Meal meal) {
-    final selectedMeal = dummyMeals.firstWhere(
-      (mealItem) => mealItem.id == meal.id,
-    );
-
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => MealDetailsScreen(meal: selectedMeal),
+        builder: (ctx) => MealDetailsScreen(meal: meal),
       ),
     );
   }
