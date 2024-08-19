@@ -13,6 +13,7 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen> {
   List<Meal> _favoriteMeals = [];
+  List<Meal> loadedMeals = [];
   String tableName = 'favorite_meals';
   String columnId = 'id';
   int _selectedPageIndex = 0;
@@ -28,7 +29,6 @@ class _TabsScreenState extends State<TabsScreen> {
 
   void _toggleMealFavoriteStatus(Meal meal) async {
     final isExisting = _favoriteMeals.contains(meal);
-    List<Meal> loadedMeals = [];
     if (isExisting) {
       await removeFavourite(meal);
       loadedMeals = await getFavoriteMealsFromDB();
@@ -46,14 +46,16 @@ class _TabsScreenState extends State<TabsScreen> {
       });
       _showInfoMessage('Marked as a favourite');
     }
+    loadedMeals = [];
   }
 
   void _selectPage(int index) async {
-    List<Meal> loadedMeals = await getFavoriteMealsFromDB();
+    loadedMeals = await getFavoriteMealsFromDB();
     setState(() {
       _selectedPageIndex = index;
       _favoriteMeals = loadedMeals;
     });
+    loadedMeals = [];
   }
 
   @override
