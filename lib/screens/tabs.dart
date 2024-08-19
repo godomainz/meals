@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meals/models/meal.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/meals.dart';
+import 'package:meals/data/db_utils.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -11,8 +12,11 @@ class TabsScreen extends StatefulWidget {
 }
 
 class _TabsScreenState extends State<TabsScreen> {
+  List<Meal> _favoriteMeals = [];
+  String tableName = 'favorite_meals';
+  String columnId = 'id';
   int _selectedPageIndex = 0;
-  final List<Meal> _favoriteMeals = [];
+
   void _showInfoMessage(String message) {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -22,24 +26,33 @@ class _TabsScreenState extends State<TabsScreen> {
     );
   }
 
-  void _toggleMealFavoriteStatus(Meal meal) {
+  void _toggleMealFavoriteStatus(Meal meal) async {
     final isExisting = _favoriteMeals.contains(meal);
+    List<Meal> loadedMeals = [];
     if (isExisting) {
+      await removeFavourite(meal);
+      loadedMeals = await getFavoriteMealsFromDB();
       setState(() {
-        _favoriteMeals.remove(meal);
+        // _favoriteMeals.remove(meal);
+        _favoriteMeals = loadedMeals;
       });
       _showInfoMessage('Meal is no longer a favourite');
     } else {
+      await addFavouriteToDB(meal);
+      loadedMeals = await getFavoriteMealsFromDB();
       setState(() {
-        _favoriteMeals.add(meal);
+        // _favoriteMeals.add(meal);
+        _favoriteMeals = loadedMeals;
       });
       _showInfoMessage('Marked as a favourite');
     }
   }
 
-  void _selectPage(int index) {
+  void _selectPage(int index) async {
+    List<Meal> loadedMeals = await getFavoriteMealsFromDB();
     setState(() {
       _selectedPageIndex = index;
+      _favoriteMeals = loadedMeals;
     });
   }
 
