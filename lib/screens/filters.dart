@@ -23,6 +23,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
         title: const Text('Your Filters'),
       ),
       body: PopScope(
+        canPop: false,
         onPopInvoked: (bool didPop) async {
           if (didPop) return;
           Navigator.of(context).pop({
