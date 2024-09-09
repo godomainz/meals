@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:meals/models/meal.dart';
 import 'package:meals/providers/favorites_provider.dart';
 import 'package:meals/providers/meals_provider.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/filters.dart';
 import 'package:meals/screens/meals.dart';
-import 'package:meals/data/db_utils.dart';
 import 'package:meals/widgets/main_drawer.dart';
 
 const kInitialFilters = {
@@ -24,41 +22,15 @@ class TabsScreen extends ConsumerStatefulWidget {
 }
 
 class _TabsScreenState extends ConsumerState<TabsScreen> {
-  // List<Meal> _favoriteMeals = [];
-  List<Meal> loadedMeals = [];
   String tableName = 'favorite_meals';
   String columnId = 'id';
   int _selectedPageIndex = 0;
   Map<Filter, bool> _selectedFilters = kInitialFilters;
 
-  // void _toggleMealFavoriteStatus(Meal meal) async {
-  //   final isExisting = _favoriteMeals.contains(meal);
-  //   if (isExisting) {
-  //     await removeFavourite(meal);
-  //     loadedMeals = await getFavoriteMealsFromDB();
-  //     setState(() {
-  //       // _favoriteMeals.remove(meal);
-  //       _favoriteMeals = loadedMeals;
-  //     });
-  //     _showInfoMessage('Meal is no longer a favourite');
-  //   } else {
-  //     await addFavouriteToDB(meal);
-  //     loadedMeals = await getFavoriteMealsFromDB();
-  //     setState(() {
-  //       // _favoriteMeals.add(meal);
-  //       _favoriteMeals = loadedMeals;
-  //     });
-  //     _showInfoMessage('Marked as a favourite');
-  //   }
-  //   loadedMeals = [];
-  // }
-
   void _selectPage(int index) async {
-    loadedMeals = await getFavoriteMealsFromDB();
     setState(() {
       _selectedPageIndex = index;
     });
-    loadedMeals = [];
   }
 
   void _setScreen(String identifier) async {

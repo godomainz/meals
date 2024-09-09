@@ -12,7 +12,7 @@ class MealDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    void _showInfoMessage(String message) {
+    void showInfoMessage(String message) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -26,11 +26,11 @@ class MealDetailsScreen extends ConsumerWidget {
         title: Text(meal.title),
         actions: [
           IconButton(
-              onPressed: () {
-                final wasAdded = ref
+              onPressed: () async {
+                final wasAdded = await ref
                     .read(favoriteMealsProvider.notifier)
                     .toggleMealFavoriteStatus(meal);
-                _showInfoMessage(
+                showInfoMessage(
                     wasAdded ? 'Meal added as a favorite' : 'Meal removed.');
               },
               icon: const Icon(Icons.star))

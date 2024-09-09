@@ -71,3 +71,14 @@ Future<void> removeFavourite(Meal meal) async {
     whereArgs: [meal.id],
   );
 }
+
+Future<bool> isMealExist(Meal meal) async {
+  Database db = await getDataBase();
+
+  List<Map<String, dynamic>> meals = await db.query(
+    'favorite_meals',
+    where: 'id = ?',
+    whereArgs: [meal.id],
+  );
+  return meals.isNotEmpty;
+}
