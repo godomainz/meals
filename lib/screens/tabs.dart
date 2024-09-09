@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals/models/meal.dart';
+import 'package:meals/providers/favorites_provider.dart';
 import 'package:meals/providers/meals_provider.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/filters.dart';
@@ -23,49 +24,39 @@ class TabsScreen extends ConsumerStatefulWidget {
 }
 
 class _TabsScreenState extends ConsumerState<TabsScreen> {
-  List<Meal> _favoriteMeals = [];
+  // List<Meal> _favoriteMeals = [];
   List<Meal> loadedMeals = [];
   String tableName = 'favorite_meals';
   String columnId = 'id';
   int _selectedPageIndex = 0;
   Map<Filter, bool> _selectedFilters = kInitialFilters;
 
-  void _showInfoMessage(String message) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
-  }
-
-  void _toggleMealFavoriteStatus(Meal meal) async {
-    final isExisting = _favoriteMeals.contains(meal);
-    if (isExisting) {
-      await removeFavourite(meal);
-      loadedMeals = await getFavoriteMealsFromDB();
-      setState(() {
-        // _favoriteMeals.remove(meal);
-        _favoriteMeals = loadedMeals;
-      });
-      _showInfoMessage('Meal is no longer a favourite');
-    } else {
-      await addFavouriteToDB(meal);
-      loadedMeals = await getFavoriteMealsFromDB();
-      setState(() {
-        // _favoriteMeals.add(meal);
-        _favoriteMeals = loadedMeals;
-      });
-      _showInfoMessage('Marked as a favourite');
-    }
-    loadedMeals = [];
-  }
+  // void _toggleMealFavoriteStatus(Meal meal) async {
+  //   final isExisting = _favoriteMeals.contains(meal);
+  //   if (isExisting) {
+  //     await removeFavourite(meal);
+  //     loadedMeals = await getFavoriteMealsFromDB();
+  //     setState(() {
+  //       // _favoriteMeals.remove(meal);
+  //       _favoriteMeals = loadedMeals;
+  //     });
+  //     _showInfoMessage('Meal is no longer a favourite');
+  //   } else {
+  //     await addFavouriteToDB(meal);
+  //     loadedMeals = await getFavoriteMealsFromDB();
+  //     setState(() {
+  //       // _favoriteMeals.add(meal);
+  //       _favoriteMeals = loadedMeals;
+  //     });
+  //     _showInfoMessage('Marked as a favourite');
+  //   }
+  //   loadedMeals = [];
+  // }
 
   void _selectPage(int index) async {
     loadedMeals = await getFavoriteMealsFromDB();
     setState(() {
       _selectedPageIndex = index;
-      _favoriteMeals = loadedMeals;
     });
     loadedMeals = [];
   }
@@ -107,15 +98,14 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     }).toList();
 
     Widget activePage = CategoriesScreen(
-      onToggleFavorite: _toggleMealFavoriteStatus,
       availableMeals: availableMeals,
     );
     var activePageTitle = 'Categories';
+    final favoriteMeals = ref.watch(favoriteMealsProvider);
     if (_selectedPageIndex == 1) {
       activePageTitle = 'Your Favorites';
       activePage = MealsScreen(
-        meals: _favoriteMeals,
-        onToggleFavorite: _toggleMealFavoriteStatus,
+        meals: favoriteMeals,
       );
     }
 
