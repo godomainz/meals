@@ -28,14 +28,24 @@ class MealDetailsScreen extends ConsumerWidget {
         title: Text(meal.title),
         actions: [
           IconButton(
-              onPressed: () async {
-                final wasAdded = await ref
-                    .read(favoriteMealsProvider.notifier)
-                    .toggleMealFavoriteStatus(meal);
-                showInfoMessage(
-                    wasAdded ? 'Meal added as a favorite' : 'Meal removed.');
+            onPressed: () async {
+              final wasAdded = await ref
+                  .read(favoriteMealsProvider.notifier)
+                  .toggleMealFavoriteStatus(meal);
+              showInfoMessage(
+                  wasAdded ? 'Meal added as a favorite' : 'Meal removed.');
+            },
+            icon: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (child, animation) {
+                return RotationTransition(
+                  turns: animation,
+                  child: child,
+                );
               },
-              icon: Icon(isFavorite ? Icons.star : Icons.star_border))
+              child: Icon(isFavorite ? Icons.star : Icons.star_border),
+            ),
+          )
         ],
       ),
       body: SingleChildScrollView(
